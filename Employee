@@ -1,0 +1,17 @@
+package lab6;
+public class Employee {
+    int id;
+    String firstName, lastName, streetAddress, city, state, zip, email, phoneNumber;
+
+    public Employee(int id, String firstName, String lastName, String streetAddress, String city, String state, String zip, String email, String phoneNumber) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.state = state;
+        this.zip = zip;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+}
