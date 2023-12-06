@@ -1,0 +1,268 @@
+// Programmers: Medet Karl
+// Class: CS &145
+// Date: 11/24/2023
+// Assignment: Binary Search Tree Dictionary
+// Purpose: To implement a simple console-based employee dictionary using a binary search tree, allowing users to add, delete, modify, and 
+// lookup employee records, as well as list the number of records in the database.
+
+
+package lab6;
+ 
+import java.util.Scanner;
+
+public class ConsoleEmployeeDictionary {
+    private Node root;
+
+      public static void main(String[] args) {
+        run();
+    } // end of main method
+
+    public ConsoleEmployeeDictionary() {
+        this.root = null;
+    } // end of ConsoleEmployeeDictionary method
+
+    private Node addEmployeeRec(Node root, Employee employee) {
+        if (root == null) {
+            return new Node(employee);
+        }
+
+        if (employee.id < root.employee.id) {
+            root.left = addEmployeeRec(root.left, employee);
+        } else if (employee.id > root.employee.id) {
+            root.right = addEmployeeRec(root.right, employee);
+        }
+
+        return root;
+    }// end of addEmployeeRec method
+
+    public void addEmployee(Employee employee) {
+        root = addEmployeeRec(root, employee);
+        System.out.println("Employee added successfully.");
+    }// end of addEmployee method
+
+    private Node deleteEmployeeRec(Node root, int id) {
+        if (root == null) {
+            return null;
+        }
+
+        if (id < root.employee.id) {
+            root.left = deleteEmployeeRec(root.left, id);
+        } else if (id > root.employee.id) {
+            root.right = deleteEmployeeRec(root.right, id);
+        } else {
+            if (root.left == null) {
+                return root.right;
+            } else if (root.right == null) {
+                return root.left;
+            }
+
+            root.employee.id = minValue(root.right);
+            root.right = deleteEmployeeRec(root.right, root.employee.id);
+        }
+
+        return root;
+    } // end of deleteEmployeeRe method
+
+    private int minValue(Node root) {
+        int minValue = root.employee.id;
+        while (root.left != null) {
+            minValue = root.left.employee.id;
+            root = root.left;
+        }
+        return minValue;
+    } // end of minValu method
+
+    public void deleteEmployee(int id) {
+        root = deleteEmployeeRec(root, id);
+        System.out.println("Employee deleted successfully.");
+    } // end of deleteEmployee method
+
+    private void modifyField(Node node, String field, String newValue) {
+        switch (field.toLowerCase()) {
+            case "firstname":
+                node.employee.firstName = newValue;
+                break;
+            case "lastname":
+                node.employee.lastName = newValue;
+                break;
+            case "streetaddress":
+                node.employee.streetAddress = newValue;
+                break;
+            case "city":
+                node.employee.city = newValue;
+                break;
+            case "state":
+                node.employee.state = newValue;
+                break;
+            case "zip":
+                node.employee.zip = newValue;
+                break;
+            case "email":
+                node.employee.email = newValue;
+                break;
+            case "phonenumber":
+                node.employee.phoneNumber = newValue;
+                break;
+            default:
+                System.out.println("Invalid field name.");
+        }
+    } // end of modifyField method
+
+    private Node findEmployee(Node root, int id) {
+        if (root == null || root.employee.id == id) {
+            return root;
+        }
+
+        if (id < root.employee.id) {
+            return findEmployee(root.left, id);
+        } else {
+            return findEmployee(root.right, id);
+        }
+    } // end of  method
+
+    public Node findEmployee(int id) {
+        return findEmployee(root, id);
+    } // end of findEmployee method
+
+    public void modifyEmployee(int id, String field, String newValue) {
+        Node node = findEmployee(id);
+        if (node != null) {
+            modifyField(node, field, newValue);
+            System.out.println("Employee information modified successfully.");
+        } else {
+            System.out.println("Employee not found.");
+        }
+    } // end of modifyEmployee method
+
+    private void preOrder(Node root) {
+        if (root != null) {
+            System.out.println(root.employee.firstName + " " + root.employee.lastName);
+            preOrder(root.left);
+            preOrder(root.right);
+        }
+    } // end of preOrder method
+
+    private void inOrder(Node root) {
+        if (root != null) {
+            inOrder(root.left);
+            System.out.println(root.employee.firstName + " " + root.employee.lastName);
+            inOrder(root.right);
+        }
+    } // end of inOrder method
+
+    private void postOrder(Node root) {
+        if (root != null) {
+            postOrder(root.left);
+            postOrder(root.right);
+            System.out.println(root.employee.firstName + " " + root.employee.lastName);
+        }
+    } // end of postOrder method
+
+    public void lookupEmployees(String order) {
+        switch (order.toLowerCase()) {
+            case "preorder":
+                preOrder(root);
+                break;
+            case "inorder":
+                inOrder(root);
+                break;
+            case "postorder":
+                postOrder(root);
+                break;
+            default:
+                System.out.println("Invalid order type.");
+        }
+    } // end of lookupEmployees method
+
+    private int countRecords(Node root) {
+        if (root == null) {
+            return 0;
+        }
+        return 1 + countRecords(root.left) + countRecords(root.right);
+    } // end of countRecords method
+
+    public int countRecords() {
+        return countRecords(root);
+    } // end of countRecords method
+
+    public static void run(){
+        ConsoleEmployeeDictionary dictionary = new ConsoleEmployeeDictionary();
+     Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Add Employee");
+            System.out.println("2. Delete Employee");
+            System.out.println("3. Modify Employee");
+            System.out.println("4. Lookup Employees");
+            System.out.println("5. List Number of Records");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    // Add Employee
+                    System.out.print("Enter Employee ID: ");
+                    int id = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline
+                    System.out.print("Enter First Name: ");
+                    String firstName = scanner.nextLine();
+                    System.out.print("Enter Last Name: ");
+                    String lastName = scanner.nextLine();
+                    System.out.print("Enter Street Address: ");
+                    String streetAddress = scanner.nextLine();
+                    System.out.print("Enter City: ");
+                    String city = scanner.nextLine();
+                    System.out.print("Enter State: ");
+                    String state = scanner.nextLine();
+                    System.out.print("Enter Zip: ");
+                    String zip = scanner.nextLine();
+                    System.out.print("Enter Email: ");
+                    String email = scanner.nextLine();
+                    System.out.print("Enter Phone Number: ");
+                    String phoneNumber = scanner.nextLine();
+
+                    Employee newEmployee = new Employee(id, firstName, lastName, streetAddress, city, state, zip, email, phoneNumber);
+                    dictionary.addEmployee(newEmployee);
+                    break;
+                case 2:
+                    // Delete Employee
+                    System.out.print("Enter Employee ID to delete: ");
+                    int deleteId = scanner.nextInt();
+                    dictionary.deleteEmployee(deleteId);
+                    break;
+                case 3:
+                    // Modify Employee
+                    System.out.print("Enter Employee ID to modify: ");
+                    int modifyId = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline
+                    System.out.print("Enter Field to Modify: ");
+                    String field = scanner.nextLine();
+                    System.out.print("Enter New Value: ");
+                    String newValue = scanner.nextLine();
+
+                    dictionary.modifyEmployee(modifyId, field, newValue);
+                    break;
+                case 4:
+                    // Lookup Employees
+                    System.out.print("Enter Order (preorder, inorder, postorder): ");
+                    String order = scanner.next();
+                    dictionary.lookupEmployees(order);
+                    break;
+                case 5:
+                    // List Number of Records
+                    int numRecords = dictionary.countRecords();
+                    System.out.println("Number of Records: " + numRecords);
+                    break;
+                case 6:
+                    // Exit
+                    System.out.println("Exiting program. Goodbye!");
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please enter a number between 1 and 6.");
+            }
+        }
+    } // end of run method
+} // end of class
