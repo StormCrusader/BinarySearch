@@ -1,0 +1,11 @@
+package lab6;
+
+public class Node {
+    Employee employee;
+    Node left, right;
+
+    public Node(Employee employee) {
+        this.employee = employee;
+        this.left = this.right = null;
+    }
+}
